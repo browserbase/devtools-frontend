@@ -66,7 +66,8 @@
     "unittest": "vpython3 scripts/test/run_unittests.py --no-text-coverage",
     "watch": "vpython3 third_party/node/node.py --output scripts/watch_build.js",
     "test": "vpython3 third_party/node/node.py --output scripts/run_on_target.mjs gen/test/run.js",
-    "watch-unittest": "vpython3 scripts/test/run_unittests.py --no-text-coverage --karma-args='--auto-watch --no-single-run --restart-on-file-change --auto-watch-batch-delay 250'"
+    "watch-unittest": "vpython3 scripts/test/run_unittests.py --no-text-coverage --karma-args='--auto-watch --no-single-run --restart-on-file-change --auto-watch-batch-delay 250'",
+    "go": "npm run build && (cd out/Default/gen/front_end; python3 -m http.server 8000)"
   },
   "devDependencies": {
     "@istanbuljs/schema": "0.1.3",
