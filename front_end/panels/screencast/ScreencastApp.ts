@@ -2,57 +2,37 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from "../../core/common/common.js";
-import * as i18n from "../../core/i18n/i18n.js";
-import * as SDK from "../../core/sdk/sdk.js";
-import * as UI from "../../ui/legacy/legacy.js";
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
-import { ScreencastView } from "./ScreencastView.js";
+import {ScreencastView} from './ScreencastView.js';
 
 const UIStrings = {
   /**
    *@description Tooltip text that appears when hovering over largeicon phone button in Screencast App of the Remote Devices tab when toggling screencast
    */
-  toggleScreencast: "Toggle screencast",
+  toggleScreencast: 'Toggle screencast',
 };
-const str_ = i18n.i18n.registerUIStrings(
-  "panels/screencast/ScreencastApp.ts",
-  UIStrings
-);
+const str_ = i18n.i18n.registerUIStrings('panels/screencast/ScreencastApp.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let appInstance: ScreencastApp;
 
-export class ScreencastApp
-  implements
-    Common.App.App,
-    SDK.TargetManager
-      .SDKModelObserver<SDK.ScreenCaptureModel.ScreenCaptureModel>
-{
+export class ScreencastApp implements Common.App.App,
+                                      SDK.TargetManager.SDKModelObserver<SDK.ScreenCaptureModel.ScreenCaptureModel> {
   private readonly enabledSetting: Common.Settings.Setting<boolean>;
   toggleButton: UI.Toolbar.ToolbarToggle;
   private screenCaptureModel?: SDK.ScreenCaptureModel.ScreenCaptureModel;
   private screencastView?: ScreencastView;
   rootView?: UI.RootView.RootView;
   constructor() {
-    this.enabledSetting = Common.Settings.Settings.instance().createSetting(
-      "screencast-enabled",
-      true
-    );
-    this.toggleButton = new UI.Toolbar.ToolbarToggle(
-      i18nString(UIStrings.toggleScreencast),
-      "devices"
-    );
+    this.enabledSetting = Common.Settings.Settings.instance().createSetting('screencast-enabled', true);
+    this.toggleButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleScreencast), 'devices');
     this.toggleButton.setToggled(this.enabledSetting.get());
     this.toggleButton.setEnabled(false);
-    this.toggleButton.addEventListener(
-      UI.Toolbar.ToolbarButton.Events.Click,
-      this.toggleButtonClicked,
-      this
-    );
-    SDK.TargetManager.TargetManager.instance().observeModels(
-      SDK.ScreenCaptureModel.ScreenCaptureModel,
-      this
-    );
+    this.toggleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.toggleButtonClicked, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.ScreenCaptureModel.ScreenCaptureModel, this);
   }
 
   static instance(): ScreencastApp {
@@ -68,13 +48,8 @@ export class ScreencastApp
     this.rootView.focus();
   }
 
-  modelAdded(
-    screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel
-  ): void {
-    if (
-      screenCaptureModel.target() !==
-      SDK.TargetManager.TargetManager.instance().primaryPageTarget()
-    ) {
+  modelAdded(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel): void {
+    if (screenCaptureModel.target() !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
     this.screenCaptureModel = screenCaptureModel;
@@ -87,9 +62,7 @@ export class ScreencastApp
     this.onScreencastEnabledChanged();
   }
 
-  modelRemoved(
-    screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel
-  ): void {
+  modelRemoved(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel): void {
     if (this.screenCaptureModel !== screenCaptureModel) {
       return;
     }
@@ -117,10 +90,8 @@ export class ScreencastApp
 let toolbarButtonProviderInstance: ToolbarButtonProvider;
 
 export class ToolbarButtonProvider implements UI.Toolbar.Provider {
-  static instance(
-    opts: { forceNew: boolean } = { forceNew: false }
-  ): ToolbarButtonProvider {
-    const { forceNew } = opts;
+  static instance(opts: {forceNew: boolean} = {forceNew: false}): ToolbarButtonProvider {
+    const {forceNew} = opts;
     if (!toolbarButtonProviderInstance || forceNew) {
       toolbarButtonProviderInstance = new ToolbarButtonProvider();
     }
@@ -128,7 +99,7 @@ export class ToolbarButtonProvider implements UI.Toolbar.Provider {
     return toolbarButtonProviderInstance;
   }
 
-  item(): UI.Toolbar.ToolbarItem | null {
+  item(): UI.Toolbar.ToolbarItem|null {
     return ScreencastApp.instance().toggleButton;
   }
 }
@@ -136,10 +107,8 @@ export class ToolbarButtonProvider implements UI.Toolbar.Provider {
 let screencastAppProviderInstance: ScreencastAppProvider;
 
 export class ScreencastAppProvider implements Common.AppProvider.AppProvider {
-  static instance(
-    opts: { forceNew: boolean } = { forceNew: false }
-  ): ScreencastAppProvider {
-    const { forceNew } = opts;
+  static instance(opts: {forceNew: boolean} = {forceNew: false}): ScreencastAppProvider {
+    const {forceNew} = opts;
     if (!screencastAppProviderInstance || forceNew) {
       screencastAppProviderInstance = new ScreencastAppProvider();
     }
